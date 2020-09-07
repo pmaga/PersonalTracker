@@ -5,6 +5,7 @@ Vue.component('status-edit', {
     template: `
 <div>
     <form class="edit-form" @submit.prevent="onSubmit">
+        <p>Date: {{ status.date }} </p>
         <p>
             <label for="goals">Goals</label> 
             <textarea cols="30" rows="4" v-model="dayStatus.goals"></textarea>
@@ -89,15 +90,15 @@ Vue.component('status-list', {
 var app = new Vue({
     el: '#app',
     data: {
-        selectedStatus: {},
+        selectedStatus: null,
         statuses: [
-            { date: '01-09-2020', goals: 'Goals', completedTasks: 'Completed tasks', todos: 'Todos' },
-            { date: '02-09-2020', goals: null, completedTasks: null, todos: null },
-            { date: '03-09-2020', goals: null, completedTasks: null, todos: null },
-            { date: '04-09-2020', goals: null, completedTasks: null, todos: null },
-            { date: '05-09-2020', goals: null, completedTasks: null, todos: null },
-            { date: '06-09-2020', goals: null, completedTasks: null, todos: null },
-            { date: '07-09-2020', goals: null, completedTasks: null, todos: null }
+            { date: new Date('2020-09-01').toLocaleDateString(), goals: 'Goals', completedTasks: 'Completed tasks', todos: 'Todos' },
+            { date: new Date('2020-09-02').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
+            { date: new Date('2020-09-03').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
+            { date: new Date('2020-09-04').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
+            { date: new Date('2020-09-05').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
+            { date: new Date('2020-09-06').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
+            { date: new Date('2020-09-07').toLocaleDateString(), goals: null, completedTasks: null, todos: null }
         ]
     },
     methods: {
@@ -106,7 +107,25 @@ var app = new Vue({
         },
         statusUpdated(status) {
             const idx = this.statuses.findIndex(element => element.date === status.date);
-            Vue.set(this.statuses, idx, status);
+
+            if (idx === -1) {
+                this.statusAdded(status);
+            }
+            else {
+                Vue.set(this.statuses, idx, status);
+            }
+        },
+        statusAdded(status) {
+            console.log(status);
+            this.statuses.push(status);
+        },
+        addStatus() {
+            var lastStatus = this.statuses[this.statuses.length - 1];
+            var newDate = new Date(lastStatus.date);
+            newDate.setDate(newDate.getDate() + 1);
+            this.selectedStatus = {
+                date: newDate.toLocaleDateString()
+            };
         }
     }
 });

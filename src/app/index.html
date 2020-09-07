@@ -10,7 +10,10 @@
         <div id="app">
             
             <status-list :statuses="statuses" @status-selected="statusSelected"></status-list>
-            <status-edit :status="selectedStatus" @status-updated="statusUpdated"></status-edit>
+
+            <button @click="addStatus">Add</button>
+
+            <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="statusUpdated"></status-edit>
 
         </div>
 
