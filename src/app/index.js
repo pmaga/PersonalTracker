@@ -4,27 +4,18 @@ Vue.component('status-edit', {
     },
     template: `
 <div>
-    <form class="edit-form" @submit.prevent="onSubmit">
-        <p>Date: {{ status.date }} </p>
-        <p>
-            <label for="goals">Goals</label> 
-            <textarea cols="30" rows="4" v-model="dayStatus.goals"></textarea>
-        </p>
+    <template>
+        <v-form ref="form">
+            <v-textarea outlined v-model="dayStatus.goals" label="Goals" :rows=4 required></v-textarea>
+            <v-textarea outlined v-model="dayStatus.completedTasks" label="Completed tasks" :rows=4 required></v-textarea>
+            <v-textarea outlined v-model="dayStatus.todos" label="Todo" :rows=4 required></v-textarea>
 
-        <p>
-            <label for="completedTasks">Completed tasks</label> 
-            <textarea cols="30" rows="4" v-model="dayStatus.completedTasks"></textarea>
-        </p>
-
-        <p>
-            <label for="todo">Todo</label> 
-            <textarea cols="30" rows="4" v-model="dayStatus.todos"></textarea>
-        </p>
-
-        <p>
-            <input type="submit" value="Save" />
-        </p>
-    </form>
+            <v-btn color="green" class="ma-2 white--text" @click="onSubmit">
+                Save 
+                <v-icon>mdi-content-save</v-icon>
+            </v-btn>
+        </v-form>
+    </template>
 </div>`,
     data() { 
         return {
@@ -66,15 +57,23 @@ Vue.component('status-list', {
     },
     template: `
     <div>
-        <ul>
-            <li v-for="(item, index) in statuses" :key="item.date">
-                <span>{{ item.date }}</span>
-                <span>{{ item.goals }}</span>
-                <span>{{ item.completedTasks }}</span>
-                <span>{{ item.todos }}</span>
-                <button class="button-edit-status" @click="selectStatus(index)"></button>
-            </li>
-        </ul>
+        <template>
+            <v-card class="mx-auto" max-width="900" tile>
+                <v-list shaped>
+                <v-subheader>Statuses</v-subheader>
+                    <v-list-item-group color="primary">
+                        <v-list-item v-for="(item, index) in statuses" :key="item.date" @click="selectStatus(index)">
+                            <v-list-item-icon>
+                                <v-icon>mdi-calendar-plus</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-content>
+                                <v-list-item-title v-text="item.date"></v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+            </v-card>
+        </template>
     </div>
     `,
     methods: {
@@ -89,6 +88,7 @@ Vue.component('status-list', {
 
 var app = new Vue({
     el: '#app',
+    vuetify: new Vuetify(),
     data: {
         selectedStatus: null,
         statuses: [
@@ -114,6 +114,8 @@ var app = new Vue({
             else {
                 Vue.set(this.statuses, idx, status);
             }
+
+            this.selectedStatus = null;
         },
         statusAdded(status) {
             console.log(status);
