@@ -14,6 +14,9 @@ Vue.component('status-edit', {
                 Save 
                 <v-icon>mdi-content-save</v-icon>
             </v-btn>
+            <v-btn color="red" class="ma-2 white--text" @click="onCancel">
+                Cancel 
+            </v-btn>
         </v-form>
     </template>
 </div>`,
@@ -40,6 +43,9 @@ Vue.component('status-edit', {
                 completedTasks: null,
                 todos: null
             };
+        },
+        onCancel() {
+            this.$emit('status-update-cancelled');
         }
     },
     watch: {

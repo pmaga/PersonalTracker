@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
     <head>
-        <title>Person Tracker</title>
+        <title>Personal Tracker</title>
 
         <link rel="stylesheet" href="index.css" />
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -28,7 +28,7 @@
                                 </v-btn>
                             </v-col>
                             <v-col cols="10" md="10" sm="10">
-                                 <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="statusUpdated"></status-edit>
+                                 <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="statusUpdated" @status-update-cancelled="selectedStatus = null"></status-edit>
                             </v-col>
                           </v-row>
                       </v-container>
