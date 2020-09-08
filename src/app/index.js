@@ -98,13 +98,13 @@ var app = new Vue({
     data: {
         selectedStatus: null,
         statuses: [
-            { date: new Date('2020-09-01').toLocaleDateString(), goals: 'Goals', completedTasks: 'Completed tasks', todos: 'Todos' },
-            { date: new Date('2020-09-02').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
-            { date: new Date('2020-09-03').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
-            { date: new Date('2020-09-04').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
-            { date: new Date('2020-09-05').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
-            { date: new Date('2020-09-06').toLocaleDateString(), goals: null, completedTasks: null, todos: null },
-            { date: new Date('2020-09-07').toLocaleDateString(), goals: null, completedTasks: null, todos: null }
+            { date: moment().subtract(7, 'days').format("DD-MM-YYYY"), goals: 'Goals', completedTasks: 'Completed tasks', todos: 'Todos' },
+            { date: moment().subtract(6, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
+            { date: moment().subtract(5, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
+            { date: moment().subtract(4, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
+            { date: moment().subtract(3, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
+            { date: moment().subtract(2, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
+            { date: moment().subtract(1, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null }
         ]
     },
     methods: {
@@ -129,11 +129,21 @@ var app = new Vue({
         },
         addStatus() {
             var lastStatus = this.statuses[this.statuses.length - 1];
-            var newDate = new Date(lastStatus.date);
-            newDate.setDate(newDate.getDate() + 1);
-            this.selectedStatus = {
-                date: newDate.toLocaleDateString()
-            };
+            var today = moment().format("DD-MM-YYYY");
+
+            if (lastStatus.date === today) {
+                this.selectStatus = lastStatus;
+            } else {
+                this.selectedStatus = {
+                    date: today
+                };
+                this.statusAdded(this.selectedStatus);
+            }
+        },
+        canAddNewStatus() {
+            var lastStatus = this.statuses[this.statuses.length - 1];
+            var today = moment().format("DD-MM-YYYY");
+            return lastStatus.date !== today;
         }
     }
 });
