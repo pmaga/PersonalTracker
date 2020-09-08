@@ -97,16 +97,21 @@ var app = new Vue({
     vuetify: new Vuetify(),
     data: {
         selectedStatus: null,
-        statuses: [
-            { date: moment().subtract(7, 'days').format("DD-MM-YYYY"), goals: 'Goals', completedTasks: 'Completed tasks', todos: 'Todos' },
-            { date: moment().subtract(6, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
-            { date: moment().subtract(5, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
-            { date: moment().subtract(4, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
-            { date: moment().subtract(3, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
-            { date: moment().subtract(2, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null },
-            { date: moment().subtract(1, 'days').format("DD-MM-YYYY"), goals: null, completedTasks: null, todos: null }
-        ]
+        statuses: null,
+        cacheKey: `statuses_${moment().month() + 1}`
     },
+    mounted() {
+        var item = localStorage.getItem(this.cacheKey);
+        if (item) {
+          try {
+            this.statuses = JSON.parse(item);
+          } catch(ex) {
+            localStorage.removeItem(this.cacheKey);
+          }
+        } else {
+            this.statuses = [];
+        }
+      },
     methods: {
         statusSelected(status) {
             this.selectedStatus = status;
@@ -122,16 +127,18 @@ var app = new Vue({
             }
 
             this.selectedStatus = null;
+            this.persistState();
         },
         statusAdded(status) {
             console.log(status);
             this.statuses.push(status);
+            this.persistState();
         },
         addStatus() {
             var lastStatus = this.statuses[this.statuses.length - 1];
             var today = moment().format("DD-MM-YYYY");
 
-            if (lastStatus.date === today) {
+            if (lastStatus && lastStatus.date === today) {
                 this.selectStatus = lastStatus;
             } else {
                 this.selectedStatus = {
@@ -141,9 +148,16 @@ var app = new Vue({
             }
         },
         canAddNewStatus() {
+            if (!this.statuses || !this.statuses.length) {
+                return true;
+            }
             var lastStatus = this.statuses[this.statuses.length - 1];
             var today = moment().format("DD-MM-YYYY");
-            return lastStatus.date !== today;
+            return lastStatus && lastStatus.date !== today;
+        },
+        persistState() {
+            const parsed = JSON.stringify(this.statuses);
+            localStorage.setItem(this.cacheKey, parsed);
         }
     }
 });
