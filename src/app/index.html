@@ -20,6 +20,11 @@
                 <v-main>
                     <v-container class="grey lighten-5">
                         <v-row>
+                            <v-app-bar color="deep-purple" dark >
+                            <v-toolbar-title>{{ currentMonth }}</v-toolbar-title>
+                          </v-app-bar>
+                        </v-row>
+                        <v-row>
                             <v-col cols="4" md="4" sm="4">
                                 <status-list :statuses="statuses" @status-selected="statusSelected"></status-list>
 
@@ -30,7 +35,7 @@
                             <v-col cols="8" md="8" sm="8">
                                  <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="statusUpdated" @status-update-cancelled="selectedStatus = null"></status-edit>
                             </v-col>
-                          </v-row>
+                        </v-row>
                       </v-container>
                 </v-main>
               </v-app>

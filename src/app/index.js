@@ -98,7 +98,8 @@ var app = new Vue({
     data: {
         selectedStatus: null,
         statuses: null,
-        cacheKey: `statuses_${moment().month() + 1}`
+        cacheKey: `statuses_${moment().month() + 1}`,
+        currentMonth: moment().format("MMMM")
     },
     mounted() {
         var item = localStorage.getItem(this.cacheKey);
