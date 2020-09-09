@@ -22,6 +22,12 @@ var app = new Vue({
     },
 
     computed: {
+        cols () {
+            const { xs, sm } = this.$vuetify.breakpoint
+            if (xs) return [5, 7];
+            if (sm) return [4, 8];
+            return [3, 9];
+        },
         lastStatus() {
             return this.statuses[this.statuses.length - 1];
         },

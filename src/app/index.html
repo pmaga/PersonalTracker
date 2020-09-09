@@ -23,14 +23,14 @@
                             </v-app-bar>
                         </v-row>
                         <v-row>
-                            <v-col cols="4" md="4" sm="4">
+                            <v-col :cols="cols[0]">
                                 <status-list :statuses="statuses" @status-selected="selectStatus"></status-list>
 
                                 <v-btn color="blue-grey" class="ma-2 white--text" @click="createAndSelectNewStatus" :disabled="!canAddNewStatus()">Add
                                     <v-icon right dark>mdi-calendar-plus</v-icon>
                                 </v-btn>
                             </v-col>
-                            <v-col cols="8" md="8" sm="8">
+                            <v-col :cols="cols[1]">
                                     <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="updateStatus" @status-update-cancelled="selectedStatus = null"></status-edit>
                             </v-col>
                         </v-row>
