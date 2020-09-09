@@ -62,7 +62,7 @@ Vue.component('status-list', {
     template: `
 <div>
     <v-card class="mx-auto" max-width="900" tile>
-        <v-list shaped>
+        <v-list shaped dense>
         <v-subheader>Statuses</v-subheader>
             <v-list-item-group color="primary">
                 <v-list-item v-for="(item, index) in statuses" :key="item.date" @click="selectStatus(index)">
@@ -99,9 +99,9 @@ var app = new Vue({
         var item = localStorage.getItem(this.cacheKey);
         if (item) {
             try {
-            this.statuses = JSON.parse(item);
+                this.statuses = JSON.parse(item);
             } catch(ex) {
-            localStorage.removeItem(this.cacheKey);
+                localStorage.removeItem(this.cacheKey);
             }
         } else {
             this.statuses = [];
@@ -142,10 +142,16 @@ var app = new Vue({
             if (this.lastStatus && this.lastStatus.date === todayFormat) {
                 this.selectStatus = this.lastStatus;
             } else {
-                this.selectedStatus = {
+                var newStatus = {
                     date: todayFormat
                 };
-                this.addStatus(this.selectedStatus);
+                if (this.lastStatus)
+                {
+                    newStatus.goals = this.lastStatus.todos;
+                }
+
+                this.addStatus(newStatus);
+                this.selectedStatus = newStatus;
             }
         },
         canAddNewStatus() {
