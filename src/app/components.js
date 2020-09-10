@@ -8,6 +8,7 @@ Vue.component('status-edit', {
         <v-textarea outlined v-model="dayStatus.goals" label="Goals" :rows=4></v-textarea>
         <v-textarea outlined v-model="dayStatus.completedTasks" label="Completed tasks" :rows=4></v-textarea>
         <v-textarea outlined v-model="dayStatus.todos" label="Todo" :rows=4></v-textarea>
+        <v-textarea outlined v-model="dayStatus.notes" label="Notes" :rows=2></v-textarea>
 
         <v-btn color="green" class="ma-2 white--text" @click="onSubmit">
             Save 
@@ -23,7 +24,8 @@ Vue.component('status-edit', {
             dayStatus: { 
                 goals: this.status.goals,
                 completedTasks: this.status.completedTasks,
-                todos: this.status.todos
+                todos: this.status.todos,
+                notes: this.status.notes
             }
         };
     },
@@ -33,31 +35,54 @@ Vue.component('status-edit', {
                 date: this.status.date,
                 goals: this.dayStatus.goals,
                 completedTasks: this.dayStatus.completedTasks,
-                todos: this.dayStatus.todos
+                todos: this.dayStatus.todos,
+                notes: this.dayStatus.notes
             };
             this.$emit('status-updated', statusUpdated);
             this.dayStatus = {
                 goals: null,
                 completedTasks: null,
-                todos: null
+                todos: null,
+                notes: null
             };
         },
         onCancel() {
             this.$emit('status-update-cancelled');
-        }
+        },
+
+        clickSave(e) {
+            if (!(e.keyCode === 83 && e.ctrlKey)) {
+              return;
+            }
+      
+            e.preventDefault();
+            this.onSubmit();
+        },
     },
     watch: {
         status(newValue) {
+            this.dayStatus.date = newValue.date,
             this.dayStatus.goals = newValue.goals,
             this.dayStatus.completedTasks = newValue.completedTasks,
-            this.dayStatus.todos = newValue.todos
+            this.dayStatus.todos = newValue.todos,
+            this.dayStatus.notes = newValue.notes
         }
-    }
+    },
+    mounted() {
+        document.addEventListener("keydown", this.clickSave);
+      },
+    
+    beforeDestroy() {
+        document.removeEventListener("keydown", this.clickSave);
+    },
 });
 
 Vue.component('status-list', {
     props: {
         statuses: Array
+    },
+    data: {
+        selectedStatus: null
     },
     template: `
 <div>
@@ -80,7 +105,13 @@ Vue.component('status-list', {
     `,
     methods: {
         selectStatus(index) {
-            this.$emit('status-selected', this.statuses[index]);
+            if (this.selectedStatus === this.statuses[index]) {
+                this.selectedStatus = null;
+            } else {
+                this.selectedStatus = this.statuses[index];
+            }
+
+            this.$emit('status-selected', this.selectedStatus);
         }
     }
 });

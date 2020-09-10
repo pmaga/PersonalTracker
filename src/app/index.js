@@ -38,7 +38,6 @@ var app = new Vue({
 
     methods: {
         selectStatus(status) {
-            console.log(status);
             this.selectedStatus = status;
         },
         updateStatus(status) {
