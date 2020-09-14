@@ -1,11 +1,16 @@
 var app = new Vue({
     el: '#app',
     vuetify: new Vuetify(),
-    data: {
-        selectedStatus: null,
-        statuses: [],
-        cacheKey: `statuses_${new Date().getMonth() + 1}`,
-        today: new Date()
+    data() {
+        var currentDate = new Date();
+        var currentMonth = currentDate.getMonth() + 1;
+        return {
+            selectedStatus: null,
+            statuses: [],
+            currentMonth: currentMonth,
+            cacheKey: `statuses_${currentMonth}`,
+            today: currentDate
+        };
     },
 
     mounted() {
@@ -33,6 +38,9 @@ var app = new Vue({
         },
         todayFormatted() {
             return this.formatDate(this.today);
+        },
+        localMonthAndYear() {
+            return this.today.toLocaleString('default', { month: 'long' }) + ' ' + this.today.getFullYear();
         }
     },
 
@@ -40,7 +48,7 @@ var app = new Vue({
         selectStatus(status) {
             this.selectedStatus = status;
         },
-        updateStatus(status) {
+        updateStatus(status, unselectStatus) {
             const idx = this.statuses.findIndex(element => element.date === status.date);
 
             if (idx === -1) {
@@ -50,7 +58,9 @@ var app = new Vue({
                 Vue.set(this.statuses, idx, status);
             }
 
-            this.selectedStatus = null;
+            if (unselectStatus) {
+                this.selectedStatus = null;
+            }
             this.persistState();
         },
         addStatus(status) {

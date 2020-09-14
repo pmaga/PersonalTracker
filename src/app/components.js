@@ -18,9 +18,13 @@ Vue.component('status-edit', {
             Cancel 
         </v-btn>
     </v-form>
+    <div class="green darken-2 text-center" v-show="saveConfirmationVisible">
+        <span class="white--text">Saved!</span>
+    </div>
 </div>`,
     data() { 
         return {
+            saveConfirmationVisible: false,
             dayStatus: { 
                 goals: this.status.goals,
                 completedTasks: this.status.completedTasks,
@@ -29,8 +33,16 @@ Vue.component('status-edit', {
             }
         };
     },
+    computed: {
+        saveConfirmationVisible() {
+            return this.saveConfirmationVisible;
+        }
+    },
     methods: {
         onSubmit() {
+            this.save(true);
+        },
+        save(unselectStatus) {
             let statusUpdated = {
                 date: this.status.date,
                 goals: this.dayStatus.goals,
@@ -38,25 +50,26 @@ Vue.component('status-edit', {
                 todos: this.dayStatus.todos,
                 notes: this.dayStatus.notes
             };
-            this.$emit('status-updated', statusUpdated);
-            this.dayStatus = {
-                goals: null,
-                completedTasks: null,
-                todos: null,
-                notes: null
-            };
+            this.$emit('status-updated', statusUpdated, unselectStatus);
+
+            if (!unselectStatus) {
+                this.saveConfirmationVisible = true;
+                setTimeout(() => this.saveConfirmationVisible = false, 2000)
+            }
         },
         onCancel() {
             this.$emit('status-update-cancelled');
         },
-
-        clickSave(e) {
+        onShortcutClick(e) {
             if (!(e.keyCode === 83 && e.ctrlKey)) {
               return;
             }
       
             e.preventDefault();
-            this.onSubmit();
+
+            var unselectStatus = !e.shiftKey;
+
+            this.save(unselectStatus);
         },
     },
     watch: {
@@ -69,11 +82,11 @@ Vue.component('status-edit', {
         }
     },
     mounted() {
-        document.addEventListener("keydown", this.clickSave);
+        document.addEventListener("keydown", this.onShortcutClick);
       },
     
     beforeDestroy() {
-        document.removeEventListener("keydown", this.clickSave);
+        document.removeEventListener("keydown", this.onShortcutClick);
     },
 });
 
