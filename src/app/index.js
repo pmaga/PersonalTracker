@@ -45,10 +45,10 @@ var app = new Vue({
     },
 
     methods: {
-        selectStatus(status) {
-            this.selectedStatus = status;
+        selectStatus(selectedStatusIndex) {
+            this.selectedStatus = this.statuses[selectedStatusIndex];
         },
-        updateStatus(status, unselectStatus) {
+        updateStatus(status) {
             const idx = this.statuses.findIndex(element => element.date === status.date);
 
             if (idx === -1) {
@@ -58,9 +58,6 @@ var app = new Vue({
                 Vue.set(this.statuses, idx, status);
             }
 
-            if (unselectStatus) {
-                this.selectedStatus = null;
-            }
             this.persistState();
         },
         addStatus(status) {

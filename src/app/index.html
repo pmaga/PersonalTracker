@@ -31,7 +31,7 @@
                                 </v-btn>
                             </v-col>
                             <v-col :cols="cols[1]">
-                                    <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="updateStatus" @status-update-cancelled="selectedStatus = null"></status-edit>
+                                    <status-edit v-if="selectedStatus" :status="selectedStatus" @status-updated="updateStatus"></status-edit>
                             </v-col>
                         </v-row>
                     </v-container>

@@ -10,12 +10,9 @@ Vue.component('status-edit', {
         <v-textarea outlined v-model="dayStatus.todos" label="Todo" :rows=4></v-textarea>
         <v-textarea outlined v-model="dayStatus.notes" label="Notes" :rows=2></v-textarea>
 
-        <v-btn color="green" class="ma-2 white--text" @click="onSubmit">
+        <v-btn color="green" class="ma-2 white--text" @click="onSubmit" :disabled="!saveButtonEnabled">
             Save 
             <v-icon>mdi-content-save</v-icon>
-        </v-btn>
-        <v-btn color="red" class="ma-2 white--text" @click="onCancel">
-            Cancel 
         </v-btn>
     </v-form>
     <div class="green darken-2 text-center" v-show="saveConfirmationVisible">
@@ -25,6 +22,7 @@ Vue.component('status-edit', {
     data() { 
         return {
             saveConfirmationVisible: false,
+            saveButtonEnabled: true,
             dayStatus: { 
                 goals: this.status.goals,
                 completedTasks: this.status.completedTasks,
@@ -33,16 +31,8 @@ Vue.component('status-edit', {
             }
         };
     },
-    computed: {
-        saveConfirmationVisible() {
-            return this.saveConfirmationVisible;
-        }
-    },
     methods: {
         onSubmit() {
-            this.save(true);
-        },
-        save(unselectStatus) {
             let statusUpdated = {
                 date: this.status.date,
                 goals: this.dayStatus.goals,
@@ -50,15 +40,14 @@ Vue.component('status-edit', {
                 todos: this.dayStatus.todos,
                 notes: this.dayStatus.notes
             };
-            this.$emit('status-updated', statusUpdated, unselectStatus);
+            this.$emit('status-updated', statusUpdated);
 
-            if (!unselectStatus) {
-                this.saveConfirmationVisible = true;
-                setTimeout(() => this.saveConfirmationVisible = false, 2000)
-            }
-        },
-        onCancel() {
-            this.$emit('status-update-cancelled');
+            this.saveConfirmationVisible = true;
+            this.saveButtonEnabled = false;
+            setTimeout(() => {
+                this.saveConfirmationVisible = false;
+                this.saveButtonEnabled = true;
+            }, 2000)
         },
         onShortcutClick(e) {
             if (!(e.keyCode === 83 && e.ctrlKey)) {
@@ -67,9 +56,7 @@ Vue.component('status-edit', {
       
             e.preventDefault();
 
-            var unselectStatus = !e.shiftKey;
-
-            this.save(unselectStatus);
+            this.onSubmit();
         },
     },
     watch: {
@@ -95,7 +82,7 @@ Vue.component('status-list', {
         statuses: Array
     },
     data: {
-        selectedStatus: null
+        selectedStatusIndex: -1
     },
     template: `
 <div>
@@ -118,13 +105,13 @@ Vue.component('status-list', {
     `,
     methods: {
         selectStatus(index) {
-            if (this.selectedStatus === this.statuses[index]) {
-                this.selectedStatus = null;
+            if (this.selectedStatusIndex === index) {
+                this.selectedStatusIndex = -1;
             } else {
-                this.selectedStatus = this.statuses[index];
+                this.selectedStatusIndex = index;
             }
 
-            this.$emit('status-selected', this.selectedStatus);
+            this.$emit('status-selected', this.selectedStatusIndex);
         }
     }
 });
